@@ -603,3 +603,47 @@ export async function getInitialState(): Promise<InitialState> {
 
 
 ​	基于上述思路，可以先从前端页面开发入手，将现有的前端页面改造为自己想要的接口信息管理页，最简单的就是先将页面调整为信息展示（先不考虑其他触发功能实现，后续再一步步进行完善）
+
+##### 权限配置
+
+​	基于上述鉴权思路，前端页面的权限配置则可通过路由控制（页面级别的权限控制），例如新增一个supAdmin角色，设定其可以访问某个路由配置下的内容
+
+![image-20240421110327892](01-frontend-脚手架构建.assets/image-20240421110327892.png)
+
+【1】access.ts 新增鉴权
+
+```ts
+// 设定supAdmin
+canSupAdmin: currentUser && currentUser.userRole === 'supAdmin',
+```
+
+【2】引入自定义组件，并在routes.ts 配置路由校验
+
+```ts
+export default [
+  // 超级管理员访问权限控制
+  {
+    path: '/supAdmin',
+    name: '超级管理员',
+    icon: 'crown',
+    access: 'canSupAdmin',
+    routes: [
+      { path: '/supAdmin', redirect: '/supAdmin/sub-page' },
+      { path: '/supAdmin/sub-page', name: '二级管理页', component: './SupAdmin' },
+    ],
+  },
+];
+```
+
+【3】数据库用户权限配置（后台）
+
+​	通过绑定配置设定用户权限（新增管理页面）
+
+
+
+
+
+
+
+
+
