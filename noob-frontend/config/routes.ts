@@ -17,6 +17,7 @@ export default [
       // { path: '/admin/sub-page', name: '二级管理页', component: './Admin' },
       { path: '/admin/userInfo', name: '用户管理', component: './Admin/UserInfo' },
       { path: '/admin/post', name: '文章管理', component: './Admin/Post' },
+      { path: '/admin/template', name: '模板管理', component: './Admin/Template' },
       
     ],
   },

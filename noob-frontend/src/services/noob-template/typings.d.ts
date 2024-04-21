@@ -35,6 +35,18 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponsePageTemplate_ = {
+    code?: number;
+    data?: PageTemplate_;
+    message?: string;
+  };
+
+  type BaseResponsePageTemplateVO_ = {
+    code?: number;
+    data?: PageTemplateVO_;
+    message?: string;
+  };
+
   type BaseResponsePageUser_ = {
     code?: number;
     data?: PageUser_;
@@ -56,6 +68,12 @@ declare namespace API {
   type BaseResponseString_ = {
     code?: number;
     data?: string;
+    message?: string;
+  };
+
+  type BaseResponseTemplateVO_ = {
+    code?: number;
+    data?: TemplateVO;
     message?: string;
   };
 
@@ -91,6 +109,11 @@ declare namespace API {
   };
 
   type getPostVOByIdUsingGETParams = {
+    /** id */
+    id?: number;
+  };
+
+  type getTemplateVOByIdUsingGETParams = {
     /** id */
     id?: number;
   };
@@ -141,6 +164,32 @@ declare namespace API {
     orders?: OrderItem[];
     pages?: number;
     records?: PostVO[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  };
+
+  type PageTemplate_ = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: Template[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  };
+
+  type PageTemplateVO_ = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: TemplateVO[];
     searchCount?: boolean;
     size?: number;
     total?: number;
@@ -223,6 +272,7 @@ declare namespace API {
     searchText?: string;
     sortField?: string;
     sortOrder?: string;
+    status?: number;
     tags?: string[];
     title?: string;
     userId?: number;
@@ -240,7 +290,7 @@ declare namespace API {
   type PostUpdateRequest = {
     content?: string;
     id?: number;
-    tags?: string[];
+    tagList?: string[];
     title?: string;
   };
 
@@ -258,6 +308,58 @@ declare namespace API {
     updateTime?: string;
     user?: UserVO;
     userId?: number;
+  };
+
+  type Template = {
+    createTime?: string;
+    creater?: number;
+    id?: number;
+    isDelete?: number;
+    status?: number;
+    templateContent?: string;
+    templateName?: string;
+    updateTime?: string;
+    updater?: number;
+  };
+
+  type TemplateAddRequest = {
+    templateContent?: string;
+    templateName?: string;
+  };
+
+  type TemplateQueryRequest = {
+    creater?: number;
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    status?: number;
+    templateContent?: string;
+    templateName?: string;
+  };
+
+  type TemplateStatusUpdateRequest = {
+    id?: number;
+    operType?: string;
+  };
+
+  type TemplateUpdateRequest = {
+    id?: number;
+    status?: number;
+    templateContent?: string;
+    templateName?: string;
+  };
+
+  type TemplateVO = {
+    createTime?: string;
+    creater?: UserVO;
+    id?: number;
+    isDelete?: number;
+    status?: number;
+    templateContent?: string;
+    templateName?: string;
+    updateTime?: string;
+    updater?: UserVO;
   };
 
   type uploadFileUsingPOSTParams = {

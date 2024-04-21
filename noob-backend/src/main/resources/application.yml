@@ -99,3 +99,4 @@ knife4j:
         api-rule: package
         api-rule-resources:
           - com.noob.module.base.controller
+          - com.noob.module.template.controller

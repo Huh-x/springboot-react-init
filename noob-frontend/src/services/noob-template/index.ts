@@ -6,6 +6,7 @@ import * as fileController from './fileController';
 import * as postController from './postController';
 import * as postFavourController from './postFavourController';
 import * as postThumbController from './postThumbController';
+import * as templateController from './templateController';
 import * as userController from './userController';
 import * as wxMpController from './wxMpController';
 export default {
@@ -14,5 +15,6 @@ export default {
   postController,
   postFavourController,
   postThumbController,
+  templateController,
   userController,
 };
