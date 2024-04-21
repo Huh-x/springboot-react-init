@@ -1,4 +1,4 @@
-## 后端脚手架构建
+# 脚手架构建
 
 
 
@@ -79,7 +79,7 @@ node_modules/@umijs/lint/dist/config/eslint/index.js
 
 ### 3.前端模板优化
 
-
+#### 🚀项目结构梳理
 
 了解项目结构和内容，把一些不需要用到的东西清理掉
 
@@ -121,6 +121,8 @@ node_modules/@umijs/lint/dist/config/eslint/index.js
 
 
 
+#### 🚀图标替换
+
 > 图标替换：[iconfont](https://www.iconfont.cn/activity/entries/all?activity_id=1)
 
 public目录：（svg下载）logo.svg替换、（png下载）favicon.ico替换
@@ -135,11 +137,122 @@ public目录：（svg下载）logo.svg替换、（png下载）favicon.ico替换
 
 
 
+#### 🚀项目文本替换
+
+​	将原有框架的一些默认预设文本调整为自身项目所需（可以通过前端页面全局搜索替换，也可对应到文件中精准替换）
+
+##### （1）登录页面
+
+​	文件：`src/pages/User/Login/index.tsx`，修改登录页面组件内容
+
+​	![image-20240421085504844](01-frontend-脚手架构建.assets/image-20240421085504844.png)
 
 
 
 
 
+
+
+
+
+
+
+##### （2）系统主页（默认欢迎页）
+
+文件：`src/pages/Welcome.tsx`
+
+
+
+
+
+
+
+
+
+##### （3）底部栏定义
+
+文件：`src/components/Footer/index.tsx`
+
+![image-20240421085859019](01-frontend-脚手架构建.assets/image-20240421085859019.png)
+
+
+
+
+
+
+
+
+
+#### 🚀样式替换
+
+​	脚手架提供的页面上的样式更换按钮可以自己选择，点击设置样式，选择自己喜欢的样式配置进行更改，选择完成【拷贝样式】
+
+​	文件：`config/defaultSettings`
+
+![image-20240421090625132](01-frontend-脚手架构建.assets/image-20240421090625132.png)
+
+
+
+【1】拿到自定义配置，修改：config/defaultSettings默认内容
+
+```tsx
+// 原defaultSettings默认内容
+import { ProLayoutProps } from '@ant-design/pro-components';
+
+/**
+ * @name
+ */
+const Settings: ProLayoutProps & {
+  pwa?: boolean;
+  logo?: string;
+} = {
+  navTheme: 'light',
+  // 拂晓蓝
+  colorPrimary: '#1890ff',
+  layout: 'mix',
+  contentWidth: 'Fluid',
+  fixedHeader: false,
+  fixSiderbar: true,
+  colorWeak: false,
+  title: 'Ant Design Pro',
+  pwa: true,
+  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  iconfontUrl: '',
+  token: {
+    // 参见ts声明，demo 见文档，通过token 修改样式
+    //https://procomponents.ant.design/components/layout#%E9%80%9A%E8%BF%87-token-%E4%BF%AE%E6%94%B9%E6%A0%B7%E5%BC%8F
+  },
+};
+
+export default Settings;
+
+```
+
+```json
+# 参考拷贝配置
+{
+  "navTheme": "light",
+  "layout": "top",
+  "contentWidth": "Fluid",
+  "fixedHeader": false,
+  "fixSiderbar": true,
+  "colorPrimary": "#FAAD14",
+  "splitMenus": false
+}
+```
+
+![image-20240421091518525](01-frontend-脚手架构建.assets/image-20240421091518525.png)
+
+【2】修改app.tsx文件
+
+```
+import defaultSettings from '../config/defaultSettings';
+settings={defaultSettings}
+```
+
+![image-20240421091054310](01-frontend-脚手架构建.assets/image-20240421091054310.png)
+
+![image-20240421092102679](01-frontend-脚手架构建.assets/image-20240421092102679.png)
 
 
 

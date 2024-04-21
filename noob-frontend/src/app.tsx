@@ -6,6 +6,7 @@ import { Link, history } from '@umijs/max';
 import { errorConfig } from './requestConfig';
 import { getLoginUserUsingGet } from './services/noob-bi/userController';
 const isDev = process.env.NODE_ENV === 'development';
+import defaultSettings from '../config/defaultSettings';
 const loginPath = '/user/login';
 
 /**
@@ -100,7 +101,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
             <SettingDrawer
               disableUrlParams
               enableDarkTheme
-              settings={initialState?.settings}
+              settings={defaultSettings}
               onSettingChange={(settings) => {
                 setInitialState((preInitialState) => ({
                   ...preInitialState,

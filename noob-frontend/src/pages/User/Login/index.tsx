@@ -153,8 +153,8 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={'Ant Design 是西湖区最具影响力的 Web 设计规范'}
+          title="Noob Template"
+          subTitle={'一个基于Springboot+Ant Design Pro构建的前后端通用模板，可帮助开发者快速构建单体应用项目架构'}
           initialValues={{
             autoLogin: true,
           }}
