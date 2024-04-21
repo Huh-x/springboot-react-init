@@ -29,7 +29,7 @@ public class PostUpdateRequest implements Serializable {
     /**
      * 标签列表
      */
-    private List<String> tags;
+    private List<String> tagList;
 
     private static final long serialVersionUID = 1L;
 }

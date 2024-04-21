@@ -109,12 +109,14 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         List<String> tagList = postQueryRequest.getTags();
         Long userId = postQueryRequest.getUserId();
         Long notId = postQueryRequest.getNotId();
+        Integer status = postQueryRequest.getStatus();
         // 拼接查询条件
         if (StringUtils.isNotBlank(searchText)) {
             queryWrapper.and(qw -> qw.like("title", searchText).or().like("content", searchText));
         }
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
         queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
+        queryWrapper.like(status!=null, "status", status);
         if (CollUtil.isNotEmpty(tagList)) {
             for (String tag : tagList) {
                 queryWrapper.like("tags", "\"" + tag + "\"");
@@ -298,6 +300,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             postVO.setUser(userService.getUserVO(user));
             postVO.setHasThumb(postIdHasThumbMap.getOrDefault(post.getId(), false));
             postVO.setHasFavour(postIdHasFavourMap.getOrDefault(post.getId(), false));
+            postVO.setStatus(post.getStatus());
             return postVO;
         }).collect(Collectors.toList());
         postVOPage.setRecords(postVOList);

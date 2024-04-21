@@ -69,6 +69,11 @@ public class Post implements Serializable {
     @TableLogic
     private Integer isDelete;
 
+    /**
+     * 文章状态
+     */
+    private Integer status;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

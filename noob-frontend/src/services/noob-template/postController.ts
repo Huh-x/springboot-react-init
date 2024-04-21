@@ -14,6 +14,21 @@ export async function addPostUsingPost(body: API.PostAddRequest, options?: { [ke
   });
 }
 
+/** batchDeletePost POST /api/post/batchDeletePost */
+export async function batchDeletePostUsingPost(
+  body: API.BatchDeleteRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/api/post/batchDeletePost', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** deletePost POST /api/post/delete */
 export async function deletePostUsingPost(
   body: API.DeleteRequest,
@@ -55,6 +70,21 @@ export async function getPostVoByIdUsingGet(
     params: {
       ...params,
     },
+    ...(options || {}),
+  });
+}
+
+/** handlePostStatus POST /api/post/handlePostStatus */
+export async function handlePostStatusUsingPost(
+  body: API.PostStatusUpdateRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/api/post/handlePostStatus', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   });
 }

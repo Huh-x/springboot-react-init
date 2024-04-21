@@ -13,6 +13,7 @@ import com.noob.module.base.model.vo.LoginUserVO;
 import com.noob.module.base.model.vo.UserVO;
 import com.noob.module.base.service.UserService;
 
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -189,6 +190,14 @@ public class UserController {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
+        // 校验用户操作更新对象是否为本人账号（一定程度上限制其更新操作，额外提供接口更新自己的信息）
+        User loginUser = userService.getLoginUser(request);
+        if(loginUser.getId().equals(deleteRequest.getId())) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR,"不允许用户更改自己的信息");
+        }
+
+        // 指定删除操作
         boolean b = userService.removeById(deleteRequest.getId());
         return ResultUtils.success(b);
     }
@@ -207,8 +216,16 @@ public class UserController {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
+        // 校验用户操作更新对象是否为本人账号（一定程度上限制其更新操作，额外提供接口更新自己的信息）
+        User loginUser = userService.getLoginUser(request);
+        if(loginUser.getId().equals(userUpdateRequest.getId())) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR,"不允许用户更改自己的信息");
+        }
+
         User user = new User();
         BeanUtils.copyProperties(userUpdateRequest, user);
+        user.setUpdateTime(new Date());
         boolean result = userService.updateById(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
@@ -328,6 +345,13 @@ public class UserController {
         if (userStatusUpdateRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
+        // 校验用户操作更新对象是否为本人账号（一定程度上限制其更新操作，额外提供接口更新自己的信息）
+        User loginUser = userService.getLoginUser(request);
+        if(loginUser.getId().equals(userStatusUpdateRequest.getId())) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR,"不允许用户更改自己的信息");
+        }
+
         Long userId = userStatusUpdateRequest.getId();
         User findUser = userService.getById(userId);
         // 校验用户信息
@@ -338,6 +362,7 @@ public class UserController {
         // 根据指定操作更新用户信息（此处根据操作类型更新用户状态信息）
         User user = new User();
         user.setId(userId);
+        user.setUpdateTime(new Date());
         String operType = userStatusUpdateRequest.getOperType();
         Integer currentUserStatus = findUser.getUserStatus();
         if("active".equals(operType)){
@@ -378,6 +403,14 @@ public class UserController {
         if (batchDeleteRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
+        // 校验用户操作更新对象是否为本人账号（一定程度上限制其更新操作，额外提供接口更新自己的信息）
+        User loginUser = userService.getLoginUser(request);
+        if(batchDeleteRequest.getIdList().contains(loginUser.getId())) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR,"不允许用户更改自己的信息");
+        }
+
+        // 执行批量操作
         List<Long> idList = batchDeleteRequest.getIdList();
         if(idList == null || idList.isEmpty()){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"指定操作列表不能为空");

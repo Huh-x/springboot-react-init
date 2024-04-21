@@ -178,6 +178,7 @@ declare namespace API {
     favourNum?: number;
     id?: number;
     isDelete?: number;
+    status?: number;
     tags?: string;
     thumbNum?: number;
     title?: string;
@@ -227,6 +228,11 @@ declare namespace API {
     userId?: number;
   };
 
+  type PostStatusUpdateRequest = {
+    id?: number;
+    operType?: string;
+  };
+
   type PostThumbAddRequest = {
     postId?: number;
   };
@@ -245,6 +251,7 @@ declare namespace API {
     hasFavour?: boolean;
     hasThumb?: boolean;
     id?: number;
+    status?: number;
     tagList?: string[];
     thumbNum?: number;
     title?: string;

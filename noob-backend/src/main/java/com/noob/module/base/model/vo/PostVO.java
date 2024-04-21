@@ -77,6 +77,12 @@ public class PostVO implements Serializable {
     private Boolean hasFavour;
 
     /**
+     * 文章状态
+     */
+    private Integer status;
+
+
+    /**
      * 包装类转对象
      *
      * @param postVO
