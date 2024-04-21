@@ -28,5 +28,19 @@ public interface UserConstant {
      */
     String BAN_ROLE = "ban";
 
+
+    /**
+     * 用户状态：激活
+     */
+    Integer USER_STATUS_ACTIVE = 1;
+
+
+    /**
+     * 用户状态：禁用
+     */
+    Integer USER_STATUS_FORBID = 0;
+
+
+
     // endregion
 }

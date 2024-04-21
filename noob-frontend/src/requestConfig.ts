@@ -100,10 +100,14 @@ export const errorConfig: RequestConfig = {
     (response) => {
       // 拦截响应数据，进行个性化处理
       const { data } = response as unknown as ResponseStructure;
-
-      if (data?.success === false) {
-        message.error('请求失败！');
+      // 打印响应数据用于调试
+      console.log('data', data);
+      // 当响应的状态码不为0，抛出错误
+      if (data.code !== 0) {
+        throw new Error(data.message);
+        // message.error('请联系管理员处理');
       }
+      // 如果一切正常，返回原始的响应数据
       return response;
     },
   ],

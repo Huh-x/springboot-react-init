@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.noob.framework.common.ErrorCode;
 import com.noob.framework.constant.CommonConstant;
 import com.noob.framework.constant.UserConstant;
+import com.noob.framework.exception.ThrowUtils;
 import com.noob.module.base.mapper.UserMapper;
 import com.noob.module.base.model.enums.UserRoleEnum;
 import com.noob.module.base.model.vo.LoginUserVO;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +31,6 @@ import org.springframework.util.DigestUtils;
 
 /**
  * 用户服务实现
- *
  */
 @Service
 @Slf4j
@@ -159,6 +160,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (currentUser == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
+        // 校验用户状态
+        Integer currentUserStatus = currentUser.getUserStatus();
+        ThrowUtils.throwIf(UserConstant.USER_STATUS_FORBID.equals(currentUserStatus), ErrorCode.USER_STATUS_FORBID_ERROR);
+        // 返回登录用户信息
         return currentUser;
     }
 
@@ -254,6 +259,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String userName = userQueryRequest.getUserName();
         String userProfile = userQueryRequest.getUserProfile();
         String userRole = userQueryRequest.getUserRole();
+        String userAccount = userQueryRequest.getUserAccount();
+        Integer userStatus = userQueryRequest.getUserStatus();
         String sortField = userQueryRequest.getSortField();
         String sortOrder = userQueryRequest.getSortOrder();
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -261,6 +268,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.eq(StringUtils.isNotBlank(unionId), "unionId", unionId);
         queryWrapper.eq(StringUtils.isNotBlank(mpOpenId), "mpOpenId", mpOpenId);
         queryWrapper.eq(StringUtils.isNotBlank(userRole), "userRole", userRole);
+        queryWrapper.eq(StringUtils.isNotBlank(userAccount), "userAccount", userAccount);
+        queryWrapper.eq(userStatus != null, "userStatus", userStatus);
         queryWrapper.like(StringUtils.isNotBlank(userProfile), "userProfile", userProfile);
         queryWrapper.like(StringUtils.isNotBlank(userName), "userName", userName);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),

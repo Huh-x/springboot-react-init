@@ -2,20 +2,12 @@ package com.noob.module.base.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.noob.framework.annotation.AuthCheck;
+import com.noob.framework.common.*;
 import com.noob.framework.exception.ThrowUtils;
-import com.noob.module.base.model.dto.user.UserAddRequest;
-import com.noob.module.base.model.dto.user.UserLoginRequest;
-import com.noob.module.base.model.dto.user.UserRegisterRequest;
-import com.noob.module.base.model.dto.user.UserUpdateMyRequest;
-import com.noob.framework.common.BaseResponse;
-import com.noob.framework.common.DeleteRequest;
-import com.noob.framework.common.ErrorCode;
-import com.noob.framework.common.ResultUtils;
+import com.noob.module.base.model.dto.user.*;
 import com.noob.framework.config.WxOpenConfig;
 import com.noob.framework.constant.UserConstant;
 import com.noob.framework.exception.BusinessException;
-import com.noob.module.base.model.dto.user.UserQueryRequest;
-import com.noob.module.base.model.dto.user.UserUpdateRequest;
 import com.noob.module.base.model.entity.User;
 import com.noob.module.base.model.vo.LoginUserVO;
 import com.noob.module.base.model.vo.UserVO;
@@ -170,10 +162,15 @@ public class UserController {
         }
         User user = new User();
         BeanUtils.copyProperties(userAddRequest, user);
-        // 默认密码 12345678
+        // 设置默认密码 12345678
         String defaultPassword = "12345678";
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + defaultPassword).getBytes());
         user.setUserPassword(encryptPassword);
+
+        // 设置用户默认状态为启用
+        user.setUserStatus(UserConstant.USER_STATUS_ACTIVE);
+
+        // 保存用户信息
         boolean result = userService.save(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(user.getId());
@@ -314,5 +311,79 @@ public class UserController {
         boolean result = userService.updateById(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
+    }
+
+
+
+    /**
+     * 更新用户状态信息
+     *
+     * @param userStatusUpdateRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/handleUserStatus")
+    public BaseResponse<Boolean> handleUserStatus(@RequestBody UserStatusUpdateRequest userStatusUpdateRequest,
+                                              HttpServletRequest request) {
+        if (userStatusUpdateRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Long userId = userStatusUpdateRequest.getId();
+        User findUser = userService.getById(userId);
+        // 校验用户信息
+        if(findUser == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+
+        // 根据指定操作更新用户信息（此处根据操作类型更新用户状态信息）
+        User user = new User();
+        user.setId(userId);
+        String operType = userStatusUpdateRequest.getOperType();
+        Integer currentUserStatus = findUser.getUserStatus();
+        if("active".equals(operType)){
+            // 校验当前状态，避免重复激活
+            if(currentUserStatus==UserConstant.USER_STATUS_ACTIVE){
+                throw new BusinessException(ErrorCode.OPERATION_ERROR,"当前用户已激活，请勿重复操作");
+            }
+            user.setUserStatus(UserConstant.USER_STATUS_ACTIVE);
+            userService.updateById(user);
+        }else if("forbid".equals(operType)){
+            // 校验当前状态，避免重复禁用
+            if(currentUserStatus==UserConstant.USER_STATUS_FORBID){
+                throw new BusinessException(ErrorCode.OPERATION_ERROR,"当前用户已禁用，请勿重复操作");
+            }
+            user.setUserStatus(UserConstant.USER_STATUS_FORBID);
+            userService.updateById(user);
+        }else {
+            // 其余操作类型则不允许操作
+            throw new BusinessException(ErrorCode.OPERATION_ERROR,"指定操作类型错误，请联系管理员处理");
+        }
+        return ResultUtils.success(true);
+    }
+
+
+
+
+    // --------------- 批量操作定义 ---------------
+    /**
+     * 批量删除用户
+     *
+     * @param batchDeleteRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/batchDeleteUser")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> batchDeleteUser(@RequestBody BatchDeleteRequest batchDeleteRequest, HttpServletRequest request) {
+        if (batchDeleteRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<Long> idList = batchDeleteRequest.getIdList();
+        if(idList == null || idList.isEmpty()){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"指定操作列表不能为空");
+        }
+        // 批量删除
+        boolean b = userService.removeBatchByIds(idList);
+        return ResultUtils.success(b);
     }
 }

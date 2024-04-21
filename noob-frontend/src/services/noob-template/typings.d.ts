@@ -71,6 +71,10 @@ declare namespace API {
     message?: string;
   };
 
+  type BatchDeleteRequest = {
+    idList?: number[];
+  };
+
   type checkUsingGETParams = {
     /** echostr */
     echostr?: string;
@@ -266,6 +270,7 @@ declare namespace API {
     userPassword?: string;
     userProfile?: string;
     userRole?: string;
+    userStatus?: number;
   };
 
   type UserAddRequest = {
@@ -293,15 +298,23 @@ declare namespace API {
     sortField?: string;
     sortOrder?: string;
     unionId?: string;
+    userAccount?: string;
     userName?: string;
     userProfile?: string;
     userRole?: string;
+    userStatus?: number;
   };
 
   type UserRegisterRequest = {
     checkPassword?: string;
     userAccount?: string;
     userPassword?: string;
+  };
+
+  type UserStatusUpdateRequest = {
+    id?: number;
+    operType?: string;
+    userStatus?: number;
   };
 
   type UserUpdateMyRequest = {
@@ -321,9 +334,12 @@ declare namespace API {
   type UserVO = {
     createTime?: string;
     id?: number;
+    updateTime?: string;
+    userAccount?: string;
     userAvatar?: string;
     userName?: string;
     userProfile?: string;
     userRole?: string;
+    userStatus?: number;
   };
 }

@@ -15,6 +15,8 @@ export default [
     routes: [
       { path: '/admin', redirect: '/admin/sub-page' },
       { path: '/admin/sub-page', name: '二级管理页', component: './Admin' },
+      { path: '/admin/userInfo', name: '用户管理', component: './Admin/UserInfo' },
+      
     ],
   },
 

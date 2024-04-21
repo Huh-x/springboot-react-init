@@ -14,6 +14,21 @@ export async function addUserUsingPost(body: API.UserAddRequest, options?: { [ke
   });
 }
 
+/** batchDeleteUser POST /api/user/batchDeleteUser */
+export async function batchDeleteUserUsingPost(
+  body: API.BatchDeleteRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/api/user/batchDeleteUser', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** deleteUser POST /api/user/delete */
 export async function deleteUserUsingPost(
   body: API.DeleteRequest,
@@ -63,6 +78,21 @@ export async function getUserVoByIdUsingGet(
     params: {
       ...params,
     },
+    ...(options || {}),
+  });
+}
+
+/** handleUserStatus POST /api/user/handleUserStatus */
+export async function handleUserStatusUsingPost(
+  body: API.UserStatusUpdateRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/api/user/handleUserStatus', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   });
 }
