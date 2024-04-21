@@ -4,7 +4,7 @@ import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { Link, history } from '@umijs/max';
 import { errorConfig } from './requestConfig';
-import { getLoginUserUsingGet } from './services/noob-bi/userController';
+import { getLoginUserUsingGet } from './services/noob-template/userController';
 const isDev = process.env.NODE_ENV === 'development';
 import defaultSettings from '../config/defaultSettings';
 const loginPath = '/user/login';

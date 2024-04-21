@@ -1,6 +1,6 @@
 import { Footer } from '@/components';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import { getLoginUserUsingGet, userLoginUsingPost } from '@/services/noob-bi/userController';
+import { getLoginUserUsingGet, userLoginUsingPost } from '@/services/noob-template/userController';
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -160,7 +160,7 @@ const Login: React.FC = () => {
           }}
           actions={['其他登录方式 :', <ActionIcons key="icons" />]}
           onFinish={async (values) => {
-            await handleSubmit(values as API.LoginParams);
+            await handleSubmit(values as API.UserLoginRequest);
           }}
         >
           <Tabs

@@ -1,9 +1,8 @@
-import { outLogin } from '@/services/ant-design-pro/login';
+import { userLogoutUsingPost } from '@/services/noob-template/userController';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import { Spin } from 'antd';
 import { createStyles } from 'antd-style';
-import { stringify } from 'querystring';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback } from 'react';
 import { flushSync } from 'react-dom';
@@ -39,25 +38,7 @@ const useStyles = createStyles(({ token }) => {
 });
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
-  /**
-   * 退出登录，并且将当前的 url 保存
-   */
-  const loginOut = async () => {
-    await outLogin();
-    const { search, pathname } = window.location;
-    const urlParams = new URL(window.location.href).searchParams;
-    /** 此方法会跳转到 redirect 参数所在的位置 */
-    const redirect = urlParams.get('redirect');
-    // Note: There may be security issues, please note
-    if (window.location.pathname !== '/user/login' && !redirect) {
-      history.replace({
-        pathname: '/user/login',
-        search: stringify({
-          redirect: pathname + search,
-        }),
-      });
-    }
-  };
+
   const { styles } = useStyles();
 
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -69,7 +50,16 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
         flushSync(() => {
           setInitialState((s) => ({ ...s, currentUser: undefined }));
         });
-        loginOut();
+
+        // ------- start 登录注销实现 -------
+        // 调用后台接口实现登录注销
+        userLogoutUsingPost();
+        // 跳转到登录界面
+        const { search, pathname } = window.location;
+        const redirect = pathname + search;
+        history.replace('/user/login', { redirect })
+        // ------- end 登录注销实现 -------
+
         return;
       }
       history.push(`/account/${key}`);

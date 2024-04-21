@@ -245,7 +245,7 @@ export default Settings;
 
 【2】修改app.tsx文件
 
-```
+```tsx
 import defaultSettings from '../config/defaultSettings';
 settings={defaultSettings}
 ```
@@ -253,6 +253,14 @@ settings={defaultSettings}
 ![image-20240421091054310](01-frontend-脚手架构建.assets/image-20240421091054310.png)
 
 ![image-20240421092102679](01-frontend-脚手架构建.assets/image-20240421092102679.png)
+
+
+
+
+
+
+
+
 
 
 
@@ -264,7 +272,7 @@ settings={defaultSettings}
 
 ​	使用Ant Design Pro自带的openAPI工具，根据后端swagger接口文档，自动生成对应请求的service代码
 
-​	前端项目配置：config/config.ts配置openAPI参数：schemaPath
+​	前端项目配置：config/config.ts配置openAPI参数：schemaPath（后端接口文档）、projectName（项目名称）
 
 ```tsx
 openAPI: [
@@ -272,14 +280,18 @@ openAPI: [
       requestLibPath: "import { request } from '@umijs/max'",
       // 或者使用在线的版本
       schemaPath: "http://localhost:8101/api/v2/api-docs",
-      projectName:"noob-bi",
+      projectName:"noob-template",
       // schemaPath: join(__dirname, 'oneapi.json'),
       mock: false,
     }
   ],
 ```
 
-​	打开package.json，执行openapi指令，生成swagger文件（在services目录多出一个noob-bi目录，里面自动生成调用后端指定接口的方法代码）（终端输入`yarn run openapi`）
+​	打开package.json，执行openapi指令，生成swagger文件（在services目录多出一个`noob-template`目录（和上面你定义的projectName对应），里面自动生成调用后端指定接口的方法代码）（终端输入`yarn run openapi`）
+
+
+
+
 
 
 
@@ -481,3 +493,113 @@ export const request = {
 
 ​	清理TableList（前后端联调这部分的内容没有后端接口会报错）：删除page/TableList文件夹，去除路由
 
+#### ❌登录用户全局状态（❌废弃）
+
+​	*在api-platform中自定义用户全局状态内容，此处还是沿用框架的currentUser配置（参考bi-platform前端模板优化实现），此处不做调整，忽略这块内容*
+
+> 用户登录完成，前端从后台加载用户信息后，会将数据保存到全局状态中。默认脚手架提供并未保存到全局状态，所以要进行相应的修改。
+
+（1）修改项目根目录下的`typing.d.ts`文件，定义全局状态类型（InitialState），保存用户状态（当成全局变量）
+
+```ts
+/**
+ * 全局状态类型定义
+ */
+interface InitialState{
+    // 登录用户信息
+    loginUser?:API.UserVO
+}
+```
+
+（2）修改app.tsx的getInitialState 的方法
+
+​	app.tsx的getInitialState 的方法：每当首次访问页面时，就会被执行用以获取用户信息和当前的全局状态
+
+​	这段代码的实现是，当页面首次加载的时候，获取全局要保存的数据（此处为上面定义的用户登录信息/用户登录状态），随后执行用户信息获取操作（参考下面fetchUserInfo的实现用于获取当前登录用户信息）
+
+![](http://cos.holic-x.com/full-stack/_post/image-20240312122903809.png)
+
+​	修改fetchUserInfo方法实现，调用后台接口获取登录用户信息（类似地需要import引入接口方法getLoginUserUsingGet，随后执行）
+
+```ts
+// 1.引入获取用户登录信息接口
+import { getLoginUserUsingGet } from '@/services/api-platform-backend/userController';
+
+// 2.调整Promise要获取的全局变量，调用方法获取用户信息
+export async function getInitialState(): Promise<InitialState> {
+  // 当页面首次加载时，获取要全局保存的数据，比如用户登录信息
+    const state: InitialState = {
+      // 初始化登录用户的状态，初始值设为undefined
+      loginUser: undefined,
+    }
+    try {
+      // 调用getLoginUserUsingGET()函数，尝试获取当前已经登录的用户信息
+      const res = await getLoginUserUsingGet();
+      // 如果从后端获取的数据不为空，就把获取到的用户数据赋值给state.loginUser
+      if (res.data) {
+        state.loginUser = res.data;
+      }
+    // 如果在获取用户信息的过程中发生错误，就把页面重定向到登录页面
+    } catch (error) {
+      history.push(loginPath);
+    }
+    // 返回修改后的状态
+    return state;
+  };
+```
+
+​	清理无关的代码块：结合上述流程可以实现用户信息状态保存操作，因此此处清理脚手架原有的实现
+
+![](http://cos.holic-x.com/full-stack/_post/image-20240312124036531.png)
+
+
+
+​	最终修改的内容为：
+
+![](http://cos.holic-x.com/full-stack/_post/image-20240312124256337.png)
+
+
+
+
+
+
+
+#### 👀框架权限机制（角色访问控制）
+
+​	模块开发：做一个管理员可以控制的信息管理模块
+
+​	开发思路：首先，要了解前端是怎么区分权限的。基于上述版本，登录后会发现原本有三个菜单栏，但是管理员菜单消失了。其原因就在于前端进行了权限校验。找到`src/access.ts`文件，这个是 Ant Design Pro 内置的一套权限管理机制。
+
+![](http://cos.holic-x.com/full-stack/_post/image-20240312144534714.png)
+
+​	
+
+​	跟踪登录接口实现逻辑：登录获取到用户信息，跟踪其类型定义（后端传入的userRole，通过响应将其封装为currentUser全局对象），对照上面的access.tsx实现，相应的鉴权可通过currentUser.userRole进行校验
+
+![image-20240421102942495](01-frontend-脚手架构建.assets/image-20240421102942495.png)
+
+​	修改内容参考如下：
+
+![image-20240421103319542](01-frontend-脚手架构建.assets/image-20240421103319542.png)
+
+
+
+
+
+
+
+> 权限校验实现分析
+
+​	可以选择脚手架生成的TableList去分析，打开pages/TableList/index.tsx文件，查看其实现有handleAdd、handleUpdate、handleRemove（分别对应增删改）
+
+![](http://cos.holic-x.com/full-stack/_post/image-20240312145822202.png)
+
+​	即当点击对应按钮，它会自动触发调用相应的方法执行
+
+​	继续查阅：`const TableList: React.FC = () => {}`的定义，可以看到这个表格用到Ant Design Pro components 的 ProTable 组件
+
+![](http://cos.holic-x.com/full-stack/_post/image-20240312150716018.png)
+
+
+
+​	基于上述思路，可以先从前端页面开发入手，将现有的前端页面改造为自己想要的接口信息管理页，最简单的就是先将页面调整为信息展示（先不考虑其他触发功能实现，后续再一步步进行完善）
