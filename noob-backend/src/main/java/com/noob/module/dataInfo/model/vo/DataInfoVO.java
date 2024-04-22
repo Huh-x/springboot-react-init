@@ -45,6 +45,11 @@ public class DataInfoVO implements Serializable {
     private UserVO creater;
 
     /**
+     * 冗余字段（创建者姓名）
+     */
+    private String createrName;
+
+    /**
      * 修改者
      */
     private UserVO updater;

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.noob.framework.common.ErrorCode;
+import com.noob.framework.common.ResultUtils;
 import com.noob.framework.constant.CommonConstant;
 import com.noob.framework.exception.BusinessException;
 import com.noob.framework.exception.ThrowUtils;
@@ -19,6 +20,7 @@ import com.noob.module.dataInfo.model.dto.DataInfoQueryRequest;
 import com.noob.module.dataInfo.model.entity.DataInfo;
 import com.noob.module.dataInfo.model.vo.DataInfoVO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,6 +41,9 @@ public class DataInfoServiceImpl extends ServiceImpl<DataInfoMapper, DataInfo>
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private DataInfoMapper dataInfoMapper;
 
     @Override
     public void validDataInfo(DataInfo dataInfo, boolean add) {
@@ -150,7 +155,14 @@ public class DataInfoServiceImpl extends ServiceImpl<DataInfoMapper, DataInfo>
         return dataInfoVOPage;
     }
 
-
+    @Override
+    public Page<DataInfoVO> getVOByPage(DataInfoQueryRequest dataInfoQueryRequest) {
+        long current = dataInfoQueryRequest.getCurrent();
+        long size = dataInfoQueryRequest.getPageSize();
+        Page<T> page = new Page<>(current, size);
+        Page<DataInfoVO> dataInfoVOPage = dataInfoMapper.getVOByPage(dataInfoQueryRequest,page);
+        return dataInfoVOPage;
+    }
 }
 
 

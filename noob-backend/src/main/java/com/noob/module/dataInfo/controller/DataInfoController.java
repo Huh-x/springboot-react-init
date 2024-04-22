@@ -176,6 +176,23 @@ public class DataInfoController {
         return ResultUtils.success(dataInfoService.getDataInfoVOPage(dataInfoPage, request));
     }
 
+
+
+    /**
+     * 分页获取列表（自定义SQL处理）
+     *
+     * @param dataInfoQueryRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/listByPage")
+    public BaseResponse<Page<DataInfoVO>> listByPage(@RequestBody DataInfoQueryRequest dataInfoQueryRequest,
+                                                               HttpServletRequest request) {
+        // 获取分页信息
+        return ResultUtils.success(dataInfoService.getVOByPage(dataInfoQueryRequest));
+    }
+
+
     // endregion
 
     /**

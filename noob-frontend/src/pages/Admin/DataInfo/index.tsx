@@ -11,7 +11,7 @@ import { Button, Drawer, message,Tag ,Select} from 'antd';
 import React, { useRef, useState } from 'react';
 
 // 引入数据信息管理相关API
-import { addDataInfoUsingPost, batchDeleteDataInfoUsingPost, deleteDataInfoUsingPost, handleDataInfoStatusUsingPost, listDataInfoVoByPageUsingPost, updateDataInfoUsingPost } from '@/services/noob-template/dataInfoController';
+import { addDataInfoUsingPost, batchDeleteDataInfoUsingPost, deleteDataInfoUsingPost, handleDataInfoStatusUsingPost, listByPageUsingPost, listDataInfoVoByPageUsingPost, updateDataInfoUsingPost } from '@/services/noob-template/dataInfoController';
 
 // 接入自定义模态框或组件（新增、修改）
 import CreateModal from './components/CreateModal';
@@ -382,9 +382,16 @@ const handleBatchRemove = async (selectedRows: API.BatchDeleteRequest) => {
 
         // 根据request规则，重新编写请求和响应处理
         request={async (params, sort: Record<string, SortOrder>, filter: Record<string, React.ReactText[] | null>) => {
-          const res = await listDataInfoVoByPageUsingPost({
+          // 方式1：queryWrapper封装
+          // const res = await listDataInfoVoByPageUsingPost({
+          //   ...params
+          // })
+
+          // 方式2：自定义SQL关联
+          const res = await listByPageUsingPost({
             ...params
           })
+
           if (res?.data) {
             return  {
               data: res?.data.records || [],

@@ -107,6 +107,21 @@ export async function listDataInfoVoByPageUsingPost(
   });
 }
 
+/** listByPage POST /api/dataInfo/listByPage */
+export async function listByPageUsingPost(
+  body: API.DataInfoQueryRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsePageDataInfoVO_>('/api/dataInfo/listByPage', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** updateDataInfo POST /api/dataInfo/update */
 export async function updateDataInfoUsingPost(
   body: API.DataInfoUpdateRequest,

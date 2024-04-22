@@ -52,4 +52,12 @@ public interface DataInfoService extends IService<DataInfo> {
     Page<DataInfoVO> getDataInfoVOPage(Page<DataInfo> dataInfoPage, HttpServletRequest request);
 
 
+    /**
+     * 分页获取数据封装(SQL处理)
+     *
+     * @param dataInfoQueryRequest
+     * @return
+     */
+    Page<DataInfoVO> getVOByPage(DataInfoQueryRequest dataInfoQueryRequest);
+
 }
