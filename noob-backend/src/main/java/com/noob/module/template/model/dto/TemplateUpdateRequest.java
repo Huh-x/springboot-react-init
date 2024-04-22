@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 用户更新请求
+ * 更新请求
  *
  */
 @Data

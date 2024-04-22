@@ -4,7 +4,7 @@ spring:
     name: noob-backend
   # 默认 dev 环境
   profiles:
-    active: dev
+    active: remote
   # 支持 swagger3
   mvc:
     pathmatch:
@@ -100,3 +100,4 @@ knife4j:
         api-rule-resources:
           - com.noob.module.base.controller
           - com.noob.module.template.controller
+          - com.noob.module.dataInfo.controller
