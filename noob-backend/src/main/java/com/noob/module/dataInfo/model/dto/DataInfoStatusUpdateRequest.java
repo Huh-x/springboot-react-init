@@ -1,4 +1,4 @@
-package com.noob.module.template.model.dto;
+package com.noob.module.dataInfo.model.dto;
 
 import lombok.Data;
 
@@ -9,8 +9,7 @@ import java.io.Serializable;
  *
  */
 @Data
-public class TemplateStatusUpdateRequest implements Serializable {
-
+public class DataInfoStatusUpdateRequest implements Serializable {
 
     /**
      * id

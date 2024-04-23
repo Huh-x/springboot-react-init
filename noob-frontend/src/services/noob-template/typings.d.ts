@@ -5,6 +5,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseDataInfoVO_ = {
+    code?: number;
+    data?: DataInfoVO;
+    message?: string;
+  };
+
   type BaseResponseInt_ = {
     code?: number;
     data?: number;
@@ -20,6 +26,18 @@ declare namespace API {
   type BaseResponseLong_ = {
     code?: number;
     data?: number;
+    message?: string;
+  };
+
+  type BaseResponsePageDataInfo_ = {
+    code?: number;
+    data?: PageDataInfo_;
+    message?: string;
+  };
+
+  type BaseResponsePageDataInfoVO_ = {
+    code?: number;
+    data?: PageDataInfoVO_;
     message?: string;
   };
 
@@ -104,7 +122,69 @@ declare namespace API {
     timestamp?: string;
   };
 
+  type DataInfo = {
+    createTime?: string;
+    creater?: number;
+    dataContent?: string;
+    dataName?: string;
+    dataType?: string;
+    id?: number;
+    isDelete?: number;
+    status?: number;
+    updateTime?: string;
+    updater?: number;
+  };
+
+  type DataInfoAddRequest = {
+    dataContent?: string;
+    dataName?: string;
+    dataType?: string;
+  };
+
+  type DataInfoQueryRequest = {
+    creater?: number;
+    current?: number;
+    dataContent?: string;
+    dataName?: string;
+    dataType?: string;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    status?: number;
+  };
+
+  type DataInfoStatusUpdateRequest = {
+    id?: number;
+    operType?: string;
+  };
+
+  type DataInfoUpdateRequest = {
+    dataContent?: string;
+    dataName?: string;
+    dataType?: string;
+    id?: number;
+    status?: number;
+  };
+
+  type DataInfoVO = {
+    createTime?: string;
+    creater?: UserVO;
+    dataContent?: string;
+    dataName?: string;
+    dataType?: string;
+    id?: number;
+    isDelete?: number;
+    status?: number;
+    updateTime?: string;
+    updater?: UserVO;
+  };
+
   type DeleteRequest = {
+    id?: number;
+  };
+
+  type getDataInfoVOByIdUsingGETParams = {
+    /** id */
     id?: number;
   };
 
@@ -141,6 +221,32 @@ declare namespace API {
   type OrderItem = {
     asc?: boolean;
     column?: string;
+  };
+
+  type PageDataInfo_ = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: DataInfo[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  };
+
+  type PageDataInfoVO_ = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: DataInfoVO[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
   };
 
   type PagePost_ = {
