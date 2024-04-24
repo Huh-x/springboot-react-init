@@ -59,7 +59,6 @@ const LoginMessage: React.FC<{
   );
 };
 const Register: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const {styles} = useStyles();
 
@@ -89,7 +88,6 @@ const Register: React.FC = () => {
     }
   };
 
-  const {status, type: loginType} = userLoginState;
   return (
     <div className={styles.container}>
       <Helmet>

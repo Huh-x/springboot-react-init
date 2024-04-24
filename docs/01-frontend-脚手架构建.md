@@ -1013,3 +1013,4 @@ PS：由于引用了Login的样式，对于按钮的修改并没有体现在inde
 
 ​	由于一开始对接没有调整太多的内容，用户登陆需要校验userName、userAvatar属性，因此此处需要调整后端接口实现，注册提供userName字段注册，设定相关的内容（且相应前端请求参数也要调整，如果不希望执行指令重新生成service，则可自行修改API.UserRegisterRequest文件）
 
+![image-20240424171743798](01-frontend-脚手架构建.assets/image-20240424171743798.png)

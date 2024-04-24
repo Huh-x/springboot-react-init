@@ -26,7 +26,7 @@ const TableList: React.FC = () => {
   // 抽屉式弹窗（查看详情）
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  // 单选、多选 
+  // 单选、多选
   const [currentRow, setCurrentRow] = useState<API.PostVO>();
   const [selectedRowsState, setSelectedRows] = useState<API.PostVO[]>([]);
 
@@ -60,7 +60,7 @@ const handleAdd = async (fields: API.PostAddRequest) => {
  * 更新节点
  */
 const handleUpdate = async (fields: API.PostUpdateRequest) => {
-  // 如果没有选中行直接返回 
+  // 如果没有选中行直接返回
   if(!currentRow){
     return ;
   }
@@ -235,7 +235,7 @@ const handleBatchRemove = async (selectedRows: API.BatchDeleteRequest) => {
           required:true, // 设置必填项
           message:"请输入", // 设置提示信息
         }]
-      }
+      },
     },
     {
       title: '标签列表',
@@ -334,7 +334,7 @@ const handleBatchRemove = async (selectedRows: API.BatchDeleteRequest) => {
         </a>,
 
         record.status===0?
-        <a key="publish" 
+        <a key="publish"
            onClick={()=>{
             handlePublish(record);
            }}>
@@ -342,21 +342,21 @@ const handleBatchRemove = async (selectedRows: API.BatchDeleteRequest) => {
         </a>:null,
 
         record.status===1?
-        <a key="draft" 
+        <a key="draft"
            onClick={()=>{
             handleDraft(record);
            }}>
           暂存（下架）
         </a>:null,
 
-        <a key="delete" 
+        <a key="delete"
            onClick={()=>{
             // 触发删除操作
             handleRemove(record);
            }}>
           删除
         </a>,
-        
+
       ],
     },
   ];
@@ -398,7 +398,7 @@ const handleBatchRemove = async (selectedRows: API.BatchDeleteRequest) => {
             }
           }
         }}
-        
+
         // 列属性定义
         columns={columns}
         rowSelection={{
@@ -407,7 +407,7 @@ const handleBatchRemove = async (selectedRows: API.BatchDeleteRequest) => {
           },
         }}
       />
-      
+
       {
         // 如果多选选择，则显示操作栏
         selectedRowsState?.length > 0 && (
@@ -424,7 +424,7 @@ const handleBatchRemove = async (selectedRows: API.BatchDeleteRequest) => {
               </a>{' '}
               项 &nbsp;&nbsp;
               <span>
-                点赞数共 {selectedRowsState.reduce((pre, item) => pre + item.thumbNum!, 0)} 次  
+                点赞数共 {selectedRowsState.reduce((pre, item) => pre + item.thumbNum!, 0)} 次
                 收藏数共 {selectedRowsState.reduce((pre, item) => pre + item.favourNum!, 0)} 次
               </span>
             </div>
