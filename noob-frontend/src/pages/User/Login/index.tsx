@@ -1,6 +1,6 @@
-import { Footer } from '@/components';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import { getLoginUserUsingGet, userLoginUsingPost } from '@/services/noob-template/userController';
+import {Footer} from '@/components';
+import {getFakeCaptcha} from '@/services/ant-design-pro/login';
+import {getLoginUserUsingGet, userLoginUsingPost} from '@/services/noob-template/userController';
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -15,13 +15,14 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { Helmet, history, useModel } from '@umijs/max';
-import { Alert, Tabs, message } from 'antd';
-import { createStyles } from 'antd-style';
-import React, { useState } from 'react';
-import { flushSync } from 'react-dom';
+import {Helmet, history, useModel} from '@umijs/max';
+import {Alert, Tabs, message} from 'antd';
+import {createStyles} from 'antd-style';
+import React, {useState} from 'react';
+import {flushSync} from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
-const useStyles = createStyles(({ token }) => {
+
+const useStyles = createStyles(({token}) => {
   return {
     action: {
       marginLeft: '8px',
@@ -57,19 +58,19 @@ const useStyles = createStyles(({ token }) => {
   };
 });
 const ActionIcons = () => {
-  const { styles } = useStyles();
+  const {styles} = useStyles();
   return (
     <>
-      <AlipayCircleOutlined key="AlipayCircleOutlined" className={styles.action} />
-      <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={styles.action} />
-      <WeiboCircleOutlined key="WeiboCircleOutlined" className={styles.action} />
+      <AlipayCircleOutlined key="AlipayCircleOutlined" className={styles.action}/>
+      <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={styles.action}/>
+      <WeiboCircleOutlined key="WeiboCircleOutlined" className={styles.action}/>
     </>
   );
 };
 
 const LoginMessage: React.FC<{
   content: string;
-}> = ({ content }) => {
+}> = ({content}) => {
   return (
     <Alert
       style={{
@@ -84,8 +85,8 @@ const LoginMessage: React.FC<{
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
-  const { styles } = useStyles();
+  const {initialState, setInitialState} = useModel('@@initialState');
+  const {styles} = useStyles();
 
 
   /**
@@ -120,7 +121,15 @@ const Login: React.FC = () => {
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
+
+        // 设置登陆延迟100ms的定时器(解决登陆跳转要点击两下的问题) setTimeout(()=>{ },100)
+
         history.push(urlParams.get('redirect') || '/');
+        // console.log('获取信息',res.data);
+        // 登陆成功后将登陆用户保存到全局状态中，默认登陆跳转到主页是拿不到登陆用户信息的，需要刷新页面调用获取登陆用户信息的接口
+        setInitialState({
+          currentUser: res.data
+        });
         return;
       } else {
         message.error(res.message);
@@ -133,7 +142,7 @@ const Login: React.FC = () => {
   };
 
 
-  const { status, type: loginType } = userLoginState;
+  const {status, type: loginType} = userLoginState;
   return (
     <div className={styles.container}>
       <Helmet>
@@ -152,13 +161,13 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" />}
+          logo={<img alt="logo" src="/logo.svg"/>}
           title="Noob Template"
           subTitle={'一个基于Springboot+Ant Design Pro构建的前后端通用模板，可帮助开发者快速构建单体应用项目架构'}
           initialValues={{
             autoLogin: true,
           }}
-          actions={['其他登录方式 :', <ActionIcons key="icons" />]}
+          actions={['其他登录方式 :', <ActionIcons key="icons"/>]}
           onFinish={async (values) => {
             await handleSubmit(values as API.UserLoginRequest);
           }}
@@ -180,7 +189,7 @@ const Login: React.FC = () => {
           />
 
           {status === 'error' && loginType === 'account' && (
-            <LoginMessage content={'错误的用户名和密码(admin/ant.design)'} />
+            <LoginMessage content={'错误的用户名和密码(admin/ant.design)'}/>
           )}
           {type === 'account' && (
             <>
@@ -188,7 +197,7 @@ const Login: React.FC = () => {
                 name="userAccount"
                 fieldProps={{
                   size: 'large',
-                  prefix: <UserOutlined />,
+                  prefix: <UserOutlined/>,
                 }}
                 placeholder={'用户名: admin or user'}
                 rules={[
@@ -202,7 +211,7 @@ const Login: React.FC = () => {
                 name="userPassword"
                 fieldProps={{
                   size: 'large',
-                  prefix: <LockOutlined />,
+                  prefix: <LockOutlined/>,
                 }}
                 placeholder={'密码: ant.design'}
                 rules={[
@@ -215,13 +224,13 @@ const Login: React.FC = () => {
             </>
           )}
 
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
+          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误"/>}
           {type === 'mobile' && (
             <>
               <ProFormText
                 fieldProps={{
                   size: 'large',
-                  prefix: <MobileOutlined />,
+                  prefix: <MobileOutlined/>,
                 }}
                 name="mobile"
                 placeholder={'请输入手机号！'}
@@ -239,7 +248,7 @@ const Login: React.FC = () => {
               <ProFormCaptcha
                 fieldProps={{
                   size: 'large',
-                  prefix: <LockOutlined />,
+                  prefix: <LockOutlined/>,
                 }}
                 captchaProps={{
                   size: 'large',
@@ -285,10 +294,16 @@ const Login: React.FC = () => {
             >
               忘记密码 ?
             </a>
+            <a
+             href="/user/register"
+             target = "_blank"
+            >
+              去注册
+            </a>
           </div>
         </LoginForm>
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };
