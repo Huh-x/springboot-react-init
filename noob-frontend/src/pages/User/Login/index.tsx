@@ -294,6 +294,12 @@ const Login: React.FC = () => {
             >
               忘记密码 ?
             </a>
+            <a
+             href="/user/register"
+             target = "_blank"
+            >
+              去注册
+            </a>
           </div>
         </LoginForm>
       </div>

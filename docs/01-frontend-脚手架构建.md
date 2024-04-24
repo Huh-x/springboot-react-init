@@ -737,15 +737,279 @@ export default [
 
 ### 2.用户注册模块
 
+> 构建步骤
+
+【1】在page/User下创建一个Register模块（可从Login模块中copy一份），然后配置路由
+
+```ts
+{
+    path: '/user',
+    layout: false,
+    routes: [
+      {name: '登录', path: '/user/login', component: './User/Login'},
+      {name: '注册', path: '/user/register', component: './User/Register'}
+    ],
+  },
+```
+
+【2】在app.tsx中配置路由放行（如果是登陆、注册页面则直接放行，不需要校验）
+
+```tsx
+const loginPath = '/user/login';
+const registerPath = '/user/register';
+
+// 如果不是登录页面、或者不是注册页面则，执行
+  const { location } = history;
+  // 设定放行路由数组
+  const paths = [loginPath,registerPath];
+  if(!paths.includes(location.pathname)) {
+    const currentUser = await fetchUserInfo();
+    return {
+      currentUser,
+    };
+  }
+```
+
+![image-20240424161933007](01-frontend-脚手架构建.assets/image-20240424161933007.png)
 
 
 
+【3】调整注册页面（基本样式框架是沿用登陆表单的框架，需要按照指定规则调整即可）
+
+```tsx
+import {Footer} from '@/components';
+import {userRegisterUsingPost} from '@/services/noob-template/userController';
+import {LockOutlined, UserOutlined,} from '@ant-design/icons';
+import {LoginForm, ProFormText,} from '@ant-design/pro-components';
+import {Helmet, history} from '@umijs/max';
+import {Alert, message, Tabs} from 'antd';
+import {createStyles} from 'antd-style';
+import React, {useState} from 'react';
+import Settings from '../../../../config/defaultSettings';
+
+const useStyles = createStyles(({token}) => {
+  return {
+    action: {
+      marginLeft: '8px',
+      color: 'rgba(0, 0, 0, 0.2)',
+      fontSize: '24px',
+      verticalAlign: 'middle',
+      cursor: 'pointer',
+      transition: 'color 0.3s',
+      '&:hover': {
+        color: token.colorPrimaryActive,
+      },
+    },
+    lang: {
+      width: 42,
+      height: 42,
+      lineHeight: '42px',
+      position: 'fixed',
+      right: 16,
+      borderRadius: token.borderRadius,
+      ':hover': {
+        backgroundColor: token.colorBgTextHover,
+      },
+    },
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100vh',
+      overflow: 'auto',
+      backgroundImage:
+        "url('https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/V-_oS6r-i7wAAAAAAAAAAAAAFl94AQBr')",
+      backgroundSize: '100% 100%',
+    },
+  };
+});
+
+const LoginMessage: React.FC<{
+  content: string;
+}> = ({content}) => {
+  return (
+    <Alert
+      style={{
+        marginBottom: 24,
+      }}
+      message={content}
+      type="error"
+      showIcon
+    />
+  );
+};
+const Register: React.FC = () => {
+  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  const [type, setType] = useState<string>('account');
+  const {styles} = useStyles();
+
+
+  /**
+   * 注册校验
+   */
+  const handleSubmit = async (values: API.UserRegisterRequest) => {
+    try {
+      // 注册
+      const res = await userRegisterUsingPost(values);
+      if (res.code === 0) {
+        const defaultRegisterSuccessMessage = '信息注册成功！';
+        message.success(defaultRegisterSuccessMessage);
+        const urlParams = new URL(window.location.href).searchParams;
+        // 用户信息注册成功，跳转登录页
+        history.push(urlParams.get('redirect') || '/user/login');
+        return;
+      } else {
+        // 注册失败 打印错误提示
+        message.error(res.message);
+      }
+    } catch (error) {
+      const defaultLoginFailureMessage = '注册失败，请重试！';
+      console.log(error);
+      message.error(defaultLoginFailureMessage);
+    }
+  };
+
+  const {status, type: loginType} = userLoginState;
+  return (
+    <div className={styles.container}>
+      <Helmet>
+        <title>
+          {'注册'}- {Settings.title}
+        </title>
+      </Helmet>
+      <div
+        style={{
+          flex: '1',
+          padding: '32px 0',
+        }}
+      >
+        <LoginForm
+          contentStyle={{
+            minWidth: 280,
+            maxWidth: '75vw',
+          }}
+          logo={<img alt="logo" src="/logo.svg"/>}
+          title="Noob Template"
+          subTitle={'一个基于Springboot+Ant Design Pro构建的前后端通用模板，可帮助开发者快速构建单体应用项目架构'}
+          initialValues={{
+            autoLogin: true,
+          }}
+          submitter={{searchConfig:{submitText:"注册"}}}
+          onFinish={async (values) => {
+            await handleSubmit(values as API.UserRegisterRequest);
+          }}
+        >
+          <Tabs
+            activeKey={type}
+            onChange={setType}
+            centered
+            items={[
+              {
+                key: 'account',
+                label: '用户注册',
+              }
+            ]}
+          />
+
+          {status === 'error' && loginType === 'account' && (
+            <LoginMessage content={'错误的用户名和密码(admin/ant.design)'}/>
+          )}
+          {type === 'account' && (
+            <>
+              <ProFormText
+                name="userAccount"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <UserOutlined/>,
+                }}
+                placeholder={'请输入账号信息'}
+                rules={[
+                  {
+                    required: true,
+                    message: '用户名是必填项！',
+                  },
+                ]}
+              />
+              <ProFormText
+                name="userName"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <UserOutlined/>,
+                }}
+                placeholder={'给自己取一个个性化昵称吧'}
+                rules={[
+                  {
+                    required: true,
+                    message: '昵称是必填项！',
+                  },
+                ]}
+              />
+              <ProFormText.Password
+                name="userPassword"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <LockOutlined/>,
+                }}
+                placeholder={'请输入密码'}
+                rules={[
+                  {
+                    required: true,
+                    message: '密码是必填项！',
+                  },
+                ]}
+              />
+              <ProFormText.Password
+                name="checkPassword"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <LockOutlined/>,
+                }}
+                placeholder={'请确认密码'}
+                rules={[
+                  {
+                    required: true,
+                    message: '密码是必填项！',
+                  },
+                ]}
+              />
+            </>
+          )}
+
+          <div
+            style={{
+              marginBottom: 24,
+            }}
+          >
+            <a
+              style={{
+                float: 'right',
+                marginBottom: 24,
+              }}
+              href="/user/login"
+              target="_blank"
+            >
+              已有账号，去登陆
+            </a>
+          </div>
+        </LoginForm>
+      </div>
+      <Footer/>
+    </div>
+  );
+};
+export default Register;	
+```
+
+PS：由于引用了Login的样式，对于按钮的修改并没有体现在index.tsx中，如果想要自定义按钮配置，则可[参考修改](https://blog.csdn.net/Go_ahead_forever/article/details/134839731)：
+
+设置：`submitter={{searchConfig:{submitText:"注册"}}}`
 
 
 
+![image-20240424171431271](01-frontend-脚手架构建.assets/image-20240424171431271.png)
 
 
 
+【4】后端接口对接调整
 
-
+​	由于一开始对接没有调整太多的内容，用户登陆需要校验userName、userAvatar属性，因此此处需要调整后端接口实现，注册提供userName字段注册，设定相关的内容（且相应前端请求参数也要调整，如果不希望执行指令重新生成service，则可自行修改API.UserRegisterRequest文件）
 

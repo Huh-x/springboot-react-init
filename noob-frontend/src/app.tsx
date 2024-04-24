@@ -8,6 +8,7 @@ import { getLoginUserUsingGet } from './services/noob-template/userController';
 const isDev = process.env.NODE_ENV === 'development';
 import defaultSettings from '../config/defaultSettings';
 const loginPath = '/user/login';
+const registerPath = '/user/register';
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -24,19 +25,18 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
+  // 如果不是登录页面、或者不是注册页面则，执行
   const { location } = history;
-  if (location.pathname !== loginPath) {
+  // 设定放行路由数组
+  const paths = [loginPath,registerPath];
+  if(!paths.includes(location.pathname)) {
     const currentUser = await fetchUserInfo();
     return {
       currentUser,
     };
   }
-
   return {};
 }
-
-
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
